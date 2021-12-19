@@ -5,6 +5,7 @@ d = diag(A);
 v = zeros(n,1);
 
 v(1) = d(1);
+L(2:n,1) = A(2:n,1) / d(1);
 for j = 2 : n
     for i = 1 : j-1
         v(i) = L(j,i) * d(i);
