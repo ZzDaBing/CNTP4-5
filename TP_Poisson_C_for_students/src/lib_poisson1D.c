@@ -5,9 +5,18 @@
 /**********************************************/
 #include "lib_poisson1D.h"
 
+void lu_tridiag(double* AB, int* la){
+  
+  AB[2*(*la)] = AB[2*(*la)] / AB[(*la)];  //A[2,1] est modifié
+  for(int i=1;i<(*la);i++){
+    AB[i+(*la)] = AB[i+(*la)] - (AB[(i-1)+2*(*la)] * AB[i]);  //mise a jour d
+    AB[i+2*(*la)] = AB[i+2*(*la)] / AB[(i)+(*la)];  //mise a jour kl
+    //ku ne bouge pas
+  }
+}
+
 void set_GB_operator_rowMajor_poisson1D(double* AB, int *lab, int *la){
 
-  //TODO
   for(int i=0; i<(*la); i++){
     AB[i] = -1.0;
     AB[i+(*la)] = 2.0;

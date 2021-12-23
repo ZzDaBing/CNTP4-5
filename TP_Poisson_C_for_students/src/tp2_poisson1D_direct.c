@@ -102,7 +102,7 @@ int main(int argc,char *argv[])
 
   // Norme de RHS = Ax-b
   for(int i=0; i<la*lab;i++)
-    printf("%e ", RHS[i]);  //Affichage de RHS
+    ;//printf("%e ", RHS[i]);  //Affichage de RHS
   double norm_DGBMV = cblas_ddot(la, RHS, 1, RHS,1);
   norm_DGBMV = sqrt(norm_DGBMV);
   printf("\n\nNorm of DGBMV = %e\n",norm_DGBMV);
@@ -110,24 +110,33 @@ int main(int argc,char *argv[])
 
 
 
-
+  row = 1;  //PLUS SIMPLE EN ROW_MAJOR
+  
+  
   //LU pour matrice tridiagonale
   if (row == 1){ // LAPACK_ROW_MAJOR
     set_GB_operator_rowMajor_poisson1D(AB, &lab, &la);
-    //write_GB_operator_rowMajor_poisson1D(AB, &lab, &la, "AB_row.dat");
-
-    //LAPACKE_dgbtrf(LAPACK_COL_MAJOR,la,la,kl,ku,AB,lab,ipiv);
+    
+    lu_tridiag(AB,&la);
+    
   } 
   else { // LAPACK_COL_MAJOR
-    kv=1;
-    lab=kl+ku+kv+1;
-    set_GB_operator_colMajor_poisson1D(AB,&lab,&la,&kv);
-    LAPACKE_dgbtrf(LAPACK_COL_MAJOR,la,la,kl,ku,AB,lab,ipiv);
+    //LU_COL_MAJOR
   }
 
+  for(int i=0; i<la*lab;i++)
+    printf("%lf ", AB[i]);  //Affichage de AB
+
+
+  printf("\n\n\n");
+  //Verification avec dgbtrf en COL_MAJOR
+  kv=1;
+  lab=kl+ku+kv+1;
+  set_GB_operator_colMajor_poisson1D(AB,&lab,&la,&kv);
+  LAPACKE_dgbtrf(LAPACK_COL_MAJOR,la,la,kl,ku,AB,lab,ipiv);
 
   for(int i=0; i<la*lab;i++)
-    printf("%e ", AB[i]);  //Affichage de AB
+    printf("%lf ", AB[i]);  //Affichage de AB
 
   free(RHS);
   free(EX_SOL);
